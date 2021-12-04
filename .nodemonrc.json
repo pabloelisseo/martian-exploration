@@ -1,0 +1,7 @@
+{
+  "restartable": "rs",
+  "ignore": [".git", "node_modules/", "dist/"],
+  "watch": ["src/", "environment", "app.ts"],
+  "exec": "node --inspect -r ts-node/register app.ts",
+  "ext": "ts"
+}

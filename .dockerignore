@@ -1,0 +1,7 @@
+node_modules/
+npm-debug.log
+build/
+certificates/
+.env
+.env.sample
+.vscode/
