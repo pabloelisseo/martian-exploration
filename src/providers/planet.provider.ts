@@ -14,36 +14,36 @@ export async function create(
   try {
     const { name, upperCoordinates } = request.body as ICreatePlanetInput;
     // Check fields
-    if (isNil(upperCoordinates) || isNil(name)){
+    if (isNil(upperCoordinates) || isNil(name)) {
       throw {
         httpStatus: 413,
         description: 'Name and upperCoordinates are non optional parameters',
         error: new Error('Missing parameters'),
-      } as AppError;    
+      } as AppError;
     }
 
-    const oldPlanet = dbProvider.getPlanetsCollection().findOne({name});
-    if(!isNil(oldPlanet)){
+    const planet = await dbProvider.getPlanetsCollection().findOne({ name });
+    if (!isNil(planet)) {
       throw {
         httpStatus: 413,
         description: 'Planet name already registered',
         error: new Error('Planet alredy registered.'),
-      } as AppError;    
+      } as AppError;
     }
 
-    // Create Planet, lower coordinates are always 0,0
-    const planet: IPlanet = {
-      name : name,
-      lowerCoordinates: {x: 0, y: 0} as IPosition,
-      upperCoordinates: upperCoordinates,
-      createdAt: new Date(),
-      lastModifiedAt: new Date(),
-    };
+    const result = await dbProvider.getPlanetsCollection().insertOne(
+      {
+        name: name,
+        lowerCoordinates: { x: 0, y: 0 } as IPosition,
+        upperCoordinates: upperCoordinates,
+        createdAt: new Date(),
+        lastModifiedAt: new Date(),
 
-    const result = await dbProvider.getPlanetsCollection().insertOne(planet);
+      } as IPlanet,
+    );
     debug(`Created planet ${name} with _id ${result.insertedId.toHexString()}`);
-    
-    return {message: 'Planet successfully created'};
+
+    return { message: 'Planet successfully created' };
   } catch (err) {
     debug(`${err}`);
     return convertToAppError(err);

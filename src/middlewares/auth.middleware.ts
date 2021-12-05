@@ -22,6 +22,6 @@ router.use(async (request: Request, response: Response, next: NextFunction) => {
     const httpStatus = get(error, 'httpStatus', 500);
     const description = get(error, 'description', error);
 
-    return response.status(httpStatus).send(description);
+    return response.status(httpStatus).send({error: description});
   }
 });

@@ -29,20 +29,37 @@ async function create(
         error: new Error('Missing parameters'),
       } as AppError;
     }
-    // If planet is empty, use the last created planet
-    let planetDocument: IPlanet;
-    if (isNil(planetName)) {
-      planetDocument = await dbProvider.getPlanetsCollection().find({}, { projection: { lastModifiedAt: 1, _id: 0 } }).sort({ lastModifiedAt: -1 }).limit(1).toArray()[0];
-    } else {
-      planetDocument = await dbProvider.getPlanetsCollection().findOne({ name: planetName });
+
+    const robot = await dbProvider.getRobotsCollection().findOne({ name });
+    if (!isNil(robot)) {
+      throw {
+        httpStatus: 413,
+        description: 'Robot name already registered',
+        error: new Error('Robot alredy registered.'),
+      } as AppError;
     }
-    const planetId = planetDocument._id;
+
+    let planet: IPlanet;
+    // If planet is empty, use the last created planet
+    if (isNil(planetName)) {
+      planet = await dbProvider.getPlanetsCollection().find({}, { projection: { lastModifiedAt: 1, _id: 0 } }).sort({ lastModifiedAt: -1 }).limit(1).toArray()[0];
+    } else {
+      planet = await dbProvider.getPlanetsCollection().findOne({ name: planetName });
+    }
+    if (isNil(planet)) {
+      throw {
+        httpStatus: 413,
+        description: 'Cannot create Robot: Planet does not exist.',
+        error: new Error('Planet does not exist..'),
+      } as AppError;
+    }
+    const planetId = planet._id;
 
     // Check if robot's initial position is within the planet grid
-    if (position.x > planetDocument.upperCoordinates.x
-      || position.y > planetDocument.upperCoordinates.y
-      || position.x < planetDocument.lowerCoordinates.x
-      || position.y < planetDocument.lowerCoordinates.y) {
+    if (position.x > planet.upperCoordinates.x
+      || position.y > planet.upperCoordinates.y
+      || position.x < planet.lowerCoordinates.x
+      || position.y < planet.lowerCoordinates.y) {
       throw {
         httpStatus: 413,
         description: `Robot's initial position (${position.x}, ${position.y}) outside the planet grid.`,
@@ -59,7 +76,8 @@ async function create(
       planetId,
       orientation,
       position,
-    } as IRobot);
+    } as IRobot,
+    );
     debug(`Created robot ${name} with _id ${result.insertedId.toHexString()}`);
 
     const { token } = await tokenProvider.getNewToken(
@@ -173,45 +191,59 @@ async function move(
     }
     const { instructions } = request.body as IInstructions;
 
-    let position: IPosition;
-    let orientation: 'N'|'S'|'E'|'W';
-    let lost = false;
 
     for (const instruction of instructions) {
       // Copy values, not reference
-      const pastPosition: IPosition = {
+      const position: IPosition = {
         x: robot.position.x,
         y: robot.position.y,
       };
 
-      calculateNewPosition(instruction, robot);
+      // Update position and orientation
+      const { position: newPosition, orientation: newOrientation } = calculateNewPosition(instruction, robot);
+      robot.position = {
+        x: newPosition.x,
+        y: newPosition.y,
+      };
+      robot.orientation = newOrientation;
+
+      // Initialize the array if does not exists yet
       if (isNil(planet.limits)) {
         planet.limits = [];
       }
-      // If a robot has reach that limit before, ours mustn't get lost
+      // If other robot has reach that limit before, ours mustn't get lost
       if (planet.limits.find(p => p.x === robot.position.x && p.y === robot.position.y)) {
-        position = pastPosition;
-        orientation = robot.orientation;
         break;
       }
+
       // If is outside the planet's grid, the robot get lost
-      if (isBeyondLimits(robot, planet)) {
-        robot.lost = lost = true;
+      if (isBeyondLimits(newPosition, planet)) {
         // Write the limit for following robots
-        planet.limits.push(robot.position);
+        planet.limits.push(newPosition);
         await dbProvider.getPlanetsCollection().updateOne({ _id: planet._id }, {
           $set: { limits: planet.limits },
         });
+        // As we "dont know the position" we store the last known one
+        robot.position = {
+          x: position.x,
+          y: position.y,
+        };
+        robot.lost = true;
       }
 
       await dbProvider.getRobotsCollection().updateOne({ _id: robotId }, {
         $set: robot,
       });
-      position = robot.position;
-      orientation = robot.orientation;
+      if (robot.lost){
+        break;
+      }
     }
 
-    return { position, orientation, lost };
+    return {
+      position: robot.position,
+      orientation: robot.orientation,
+      lost: robot.lost,
+    };
 
   } catch (err) {
     debug(`${err}`);
@@ -219,11 +251,11 @@ async function move(
   }
 }
 
-function isBeyondLimits(robot: IRobot, planet: IPlanet): boolean {
-  return (robot.position.x > planet.upperCoordinates.x ||
-    robot.position.x < planet.lowerCoordinates.x ||
-    robot.position.y > planet.upperCoordinates.y ||
-    robot.position.y < planet.lowerCoordinates.y);
+function isBeyondLimits(position: IPosition, planet: IPlanet): boolean {
+  return (position.x > planet.upperCoordinates.x ||
+    position.x < planet.lowerCoordinates.x ||
+    position.y > planet.upperCoordinates.y ||
+    position.y < planet.lowerCoordinates.y);
 }
 
 function calculateNewPosition(instruction: 'L' | 'R' | 'F', robot: IRobot) {
@@ -247,6 +279,10 @@ function calculateNewPosition(instruction: 'L' | 'R' | 'F', robot: IRobot) {
     else if (robot.orientation === 'W') { robot.position.x = robot.position.x - 1; }
     break;
   }
+  return {
+    position: robot.position,
+    orientation: robot.orientation,
+  };
 }
 
 export const robotProvider = {

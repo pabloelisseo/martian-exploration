@@ -43,7 +43,7 @@ function sign(payload: DecodedTokenPayload): Record<string, any> {
 
 
 async function checkToken(token: string): Promise<DecodedTokenPayload> {
-  const tokenDocument = dbProvider.getTokensCollection().findOne({token});
+  const tokenDocument = await dbProvider.getTokensCollection().findOne({token});
   if(isNil(tokenDocument)) {
     throw {
       httpStatus: 401,
