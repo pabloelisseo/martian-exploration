@@ -1,4 +1,3 @@
-
 export interface Environment {
   autoInstance: boolean;
   api: {
@@ -6,8 +5,17 @@ export interface Environment {
     xApiKey: string;
   };
   db: IDbParameters | string;
+  crypto: ICryptoParams;
+  jwt: {
+    secret: string;
+  };
 }
-
+export interface ICryptoParams {
+  algorithm: string;
+  encryptionKey: string;
+  salt: string;
+  iv?: string;
+}
 export interface IDbParameters {
   db: string;
   host: string;

@@ -13,13 +13,21 @@ export async function create(
 ): Promise<Record<string, any>> {
   try {
     const { name, upperCoordinates } = request.body as ICreatePlanetInput;
-
     // Check fields
     if (isNil(upperCoordinates) || isNil(name)){
       throw {
         httpStatus: 413,
         description: 'Name and upperCoordinates are non optional parameters',
         error: new Error('Missing parameters'),
+      } as AppError;    
+    }
+
+    const oldPlanet = dbProvider.getPlanetsCollection().findOne({name});
+    if(!isNil(oldPlanet)){
+      throw {
+        httpStatus: 413,
+        description: 'Planet name already registered',
+        error: new Error('Planet alredy registered.'),
       } as AppError;    
     }
 

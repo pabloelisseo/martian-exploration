@@ -1,4 +1,4 @@
-import { isString } from 'lodash';
+import { isNil, isString, get } from 'lodash';
 import { MongoClient, Db, Collection } from 'mongodb';
 import {
   IDbParameters,
@@ -47,6 +47,19 @@ async function instance(connectionParameters: IDbParameters | string): Promise<v
         await db.createCollection('robots');
       }
     });
+    await db.listCollections({ name: 'tokens' }).next(async (_, collinfo) => {
+      if (!collinfo) {
+        await db.createCollection('tokens');
+      }
+      const indexes = await db.indexInformation('tokens');
+      const createdAtIndex = get(indexes, 'createdAt', null);
+      if (isNil(createdAtIndex)){
+        await db.createIndex('tokens', { 'createdAt': 1 },
+          {
+            expireAfterSeconds: 8*60*60,
+          });
+      }
+    });
   } catch (error) {
     throw new Error(error);
   }
@@ -73,10 +86,18 @@ function getRobotsCollection(): Collection<IRobot> {
   return db.collection('robots');
 }
 
+/**
+ * Returns robots collection
+ */
+function getTokensCollection(): Collection<any> {
+  return db.collection('tokens');
+}
+
 export const dbProvider = {
   instance,
   getClient,
   getPlanetsCollection,
   getRobotsCollection,
+  getTokensCollection,
   disconnectInstance,
 };

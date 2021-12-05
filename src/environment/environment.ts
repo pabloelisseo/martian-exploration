@@ -19,4 +19,13 @@ export const environment: Environment = {
       w: process.env.DB_OPTIONS_W,
     },
   },
+  crypto: {
+    algorithm: process.env.ALGORITHM,
+    encryptionKey: process.env.ENCRYPTION_KEY,
+    salt: process.env.SALT,
+    iv: process.env.IV,
+  },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+  },
 };

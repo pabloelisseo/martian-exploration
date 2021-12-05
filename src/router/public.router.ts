@@ -1,9 +1,24 @@
 import { Router, Request, Response } from 'express';
 import { planetProvider } from '~/providers/planet.provider';
 import { getApiResponse } from '~/providers/response.provider';
+import { robotProvider } from '~/providers/robot.provider';
 
 export const router: Router = Router();
 
+
+router.post('/robot/login', async (request: Request, response: Response) => {
+  const message = await robotProvider.login(request);
+
+  const { status, body } = getApiResponse(message);
+  response.status(status).send(body);
+});
+
+router.post('/robot', async (request: Request, response: Response) => {
+  const message = await robotProvider.create(request);
+
+  const { status, body } = getApiResponse(message);
+  response.status(status).send(body);
+});
 
 router.post('/planet', async (request: Request, response: Response) => {
   const message = await planetProvider.create(request);

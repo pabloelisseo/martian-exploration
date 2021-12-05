@@ -9,7 +9,9 @@ import express, { Express, json } from 'express';
 import Debug from 'debug';
 import { dbProvider } from '~/providers/db.provider';
 import { router as infoMiddleware } from '~/middlewares/info.middleware';
+import { router as authMiddleware } from '~/middlewares/auth.middleware';
 import { router as publicRouter } from '~/router/public.router';
+import { router as privateRouter } from '~/router/private.router';
 
 
 
@@ -53,6 +55,8 @@ app.use(cors());
 app.use(json());
 app.use(infoMiddleware);
 app.use('/', publicRouter);
+app.use(authMiddleware);
+app.use('/', privateRouter);
 
 
 export async function instance(): Promise<void> {
