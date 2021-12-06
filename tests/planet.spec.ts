@@ -55,7 +55,7 @@ describe(baseUrl, () => {
                     },
                 } as IPlanet)
                 .end((_err, res) => {
-                    res.should.have.status(413);
+                    res.should.have.status(403);
                     done();
                 });
         });
@@ -69,7 +69,7 @@ describe(baseUrl, () => {
                     },
                 })
                 .end((_err, res) => {
-                    res.should.have.status(413);
+                    res.should.have.status(403);
                     done();
                 });
         });
@@ -80,11 +80,11 @@ describe(baseUrl, () => {
                     name: 'mars',
                 })
                 .end((_err, res) => {
-                    res.should.have.status(413);
+                    res.should.have.status(403);
                     done();
                 });
         });
-        it('Create planet without coordinates', (done) => {
+        it('Create planet with wrong coordinates', (done) => {
             chai.request(app)
                 .post(baseUrl)
                 .send({
@@ -95,7 +95,7 @@ describe(baseUrl, () => {
                     },
                 })
                 .end((_err, res) => {
-                    res.should.have.status(413);
+                    res.should.have.status(403);
                     done();
                 });
         });

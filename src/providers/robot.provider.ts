@@ -25,7 +25,7 @@ async function create(
         // Check required fields
         if (isNil(name) || isNil(password) || isNil(orientation) || isNil(position)) {
             throw {
-                httpStatus: 413,
+                httpStatus: 403,
                 description: 'Name, password, orientation and position are non optional parameters.',
                 error: new Error('Missing parameters'),
             } as AppError;
@@ -34,7 +34,7 @@ async function create(
         const robot = await dbProvider.getRobotsCollection().findOne({ name });
         if (!isNil(robot)) {
             throw {
-                httpStatus: 413,
+                httpStatus: 403,
                 description: 'Robot name already registered',
                 error: new Error('Robot alredy registered.'),
             } as AppError;
@@ -49,7 +49,7 @@ async function create(
         }
         if (isNil(planet)) {
             throw {
-                httpStatus: 413,
+                httpStatus: 403,
                 description: 'Cannot create Robot: Planet does not exist.',
                 error: new Error('Planet does not exist..'),
             } as AppError;
@@ -62,7 +62,7 @@ async function create(
       || position.x < planet.lowerCoordinates.x
       || position.y < planet.lowerCoordinates.y) {
             throw {
-                httpStatus: 413,
+                httpStatus: 403,
                 description: `Robot's initial position (${position.x}, ${position.y}) outside the planet grid.`,
                 error: new Error('Missing parameters'),
             } as AppError;
@@ -107,7 +107,7 @@ async function login(
 
         if (isNil(name) || isNil(password)) {
             throw {
-                httpStatus: 413,
+                httpStatus: 403,
                 description: 'Name and password are non optional parameters',
                 error: new Error('Missing parameters'),
             } as AppError;
@@ -169,16 +169,16 @@ async function move(
         const robot = await dbProvider.getRobotsCollection().findOne({ _id: robotId });
         if (isNil(robot)) {
             throw {
-                httpStatus: 413,
+                httpStatus: 403,
                 description: 'Wrong robot _id',
                 error: new Error('Wrong robot _id'),
             } as AppError;
         }
         if (robot.lost) {
             throw {
-                httpStatus: 413,
+                httpStatus: 404,
                 description: 'Cannot connect to robot. We have lost it.',
-                error: new Error('Robot lost'),
+                error: new Error('Robot not found'),
             } as AppError;
         }
         const planet = await dbProvider.getPlanetsCollection().findOne({ _id: robot.planetId });

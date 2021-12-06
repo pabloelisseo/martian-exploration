@@ -9,7 +9,7 @@
     "test": "NODE_ENV=test mocha --exit -r ts-node/register tests/**/*.spec.ts",
     "test:powershell": "$env:NODE_ENV='test'; & mocha --exit -r ts-node/register tests/**/*.spec.ts",
     "coverage": "nyc -r lcov -e .ts -x \"*.test.ts\" npm run test",
-    "start:dev": "nodemon --config .nodemonrc.json src/app.ts",
+    "start:dev": "nodemon --config .nodemonrc.json --inspect src/app.ts",
     "start:prod": "npm run build && node dist/app.js"
   },
   "repository": {

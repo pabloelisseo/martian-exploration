@@ -119,7 +119,7 @@ describe(baseUrl, () => {
                     },
                 } as IRobot)
                 .end((_err, res) => {
-                    res.should.have.status(413);
+                    res.should.have.status(403);
                     done();
                 });
         });
@@ -135,7 +135,7 @@ describe(baseUrl, () => {
                     },
                 } as IRobot)
                 .end((_err, res) => {
-                    res.should.have.status(413);
+                    res.should.have.status(403);
                     done();
                 });
         });
@@ -147,7 +147,7 @@ describe(baseUrl, () => {
                     password: 'Robot12345',
                 } as IRobot)
                 .end((_err, res) => {
-                    res.should.have.status(413);
+                    res.should.have.status(403);
                     done();
                 });
         });
@@ -159,7 +159,7 @@ describe(baseUrl, () => {
                     instructions: ['F'],
                 })
                 .end((_err, res) => {
-                    res.should.have.status(413);
+                    res.should.have.status(404);
                     done();
                 });
         });

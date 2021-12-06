@@ -52,8 +52,6 @@ const swaggerOptions: SwaggerOptions = {
             bearerAuth: [],
         }],
     },
-},
-
     apis: [
         '**/*.ts',
     ],
