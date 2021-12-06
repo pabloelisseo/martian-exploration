@@ -2,7 +2,7 @@ import { isNil, isString, get } from 'lodash';
 import { MongoClient, Db, Collection } from 'mongodb';
 import {
     IDbParameters,
-} from '~/environment/environment.type';
+} from '~/../environment/environment.type';
 import { IPlanet } from '~/types/planet.types';
 import { IRobot } from '~/types/robot.types';
 

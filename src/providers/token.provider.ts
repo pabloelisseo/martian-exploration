@@ -1,5 +1,5 @@
 import { AppError } from '~/types/error.types';
-import { environment } from '~/environment/environment';
+import { environment } from '~/../environment/environment';
 import { isEmpty, isNil, isObject } from 'lodash';
 import jwt from 'jsonwebtoken';
 import { dbProvider } from './db.provider';

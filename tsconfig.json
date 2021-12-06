@@ -10,9 +10,10 @@
     "allowSyntheticDefaultImports": true,
     "paths": {
       "~/*": ["*"]
-    }, 
+    },
     "typeRoots": [
-      "@types"
+      "@types",
+      "./node_modules/@types"
     ],
     "plugins": [
       { "transform": "typescript-transform-paths" }

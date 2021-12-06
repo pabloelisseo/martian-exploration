@@ -1,4 +1,4 @@
-import { Environment } from '~/environment/environment.type';
+import { Environment } from '~/../environment/environment.type';
 import { toNumber } from 'lodash';
 
 export const environment: Environment = {

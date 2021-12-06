@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import { isEmpty } from 'lodash';
-import { environment } from '~/environment/environment';
+import { environment } from '~/../environment/environment';
 import { ICryptoConfig } from '~/types/crypto.types';
 
 export const config: ICryptoConfig = {
