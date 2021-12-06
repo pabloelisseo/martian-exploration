@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import Debug from 'debug';
 import { get, isNil } from 'lodash';
 import { dbProvider } from './db.provider';
 import { cryptoProvider } from './crypto.provider';
@@ -11,10 +10,12 @@ import { IPlanet, IPosition } from '~/types/planet.types';
 import { tokenProvider } from './token.provider';
 import { DecodedTokenPayload } from '~/types/token.types';
 import { ObjectId } from 'mongodb';
-const debug = Debug('martian-exploration:planet');
+import { Logger } from '~/logger/logger';
 
 
-// It's similar as a sign up
+/**
+ * Robot create. Similar to a sign up.
+ */
 async function create(
   request: Request,
 ): Promise<Record<string, any>> {
@@ -78,7 +79,7 @@ async function create(
       position,
     } as IRobot,
     );
-    debug(`Created robot ${name} with _id ${result.insertedId.toHexString()}`);
+    Logger.debug(`Created robot ${name} with _id ${result.insertedId.toHexString()}`);
 
     const { token } = await tokenProvider.getNewToken(
       {
@@ -89,7 +90,6 @@ async function create(
 
     return { token };
   } catch (err) {
-    debug(`${err}`);
     return convertToAppError(err);
   }
 }
@@ -134,11 +134,11 @@ async function login(
       payload,
     );
 
-    debug(`Login success for ${name}`);
+    Logger.debug(`Login success for ${name}`);
     return { token };
 
-  } catch (error) {
-    return convertToAppError(error);
+  } catch (err) {
+    return convertToAppError(err);
   }
 }
 
@@ -246,11 +246,13 @@ async function move(
     };
 
   } catch (err) {
-    debug(`${err}`);
     return convertToAppError(err);
   }
 }
 
+/**
+ * Check if position is outside of the planet grid.
+ */
 function isBeyondLimits(position: IPosition, planet: IPlanet): boolean {
   return (position.x > planet.upperCoordinates.x ||
     position.x < planet.lowerCoordinates.x ||
@@ -258,6 +260,9 @@ function isBeyondLimits(position: IPosition, planet: IPlanet): boolean {
     position.y < planet.lowerCoordinates.y);
 }
 
+/**
+ * Calculate new position after instruction.
+ */
 function calculateNewPosition(instruction: 'L' | 'R' | 'F', robot: IRobot) {
   switch (instruction) {
   case 'L':  // Turn left

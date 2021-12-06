@@ -1,21 +1,18 @@
 import { isNil, get } from 'lodash';
+import { Logger } from '~/logger/logger';
 import { AppError } from '~/types/error.types';
-import Debug from 'debug';
 
-const debug = Debug('martian-exploration:response');
 export interface ApiResponse {
   status: number;
   body: Record<string, any>;
 }
 
-export function convertToAppError(error: Error | AppError): AppError {
-
-  debug(`Error ocurred: ${error}`);
+export function convertToAppError(err: Error | AppError): AppError {
   const defaultHttpStatus = 500;
   const defaultDescription = 'Internal server error';
   const defaultError: Error = new Error('Unexpected error');
 
-  if (isNil(error)) {
+  if (isNil(err)) {
     return {
       httpStatus: 500,
       description: 'Internal server error',
@@ -24,9 +21,9 @@ export function convertToAppError(error: Error | AppError): AppError {
   }
 
   return {
-    httpStatus: get(error, 'httpStatus', defaultHttpStatus),
-    description: get(error, 'description', defaultDescription),
-    error: get(error, 'error', defaultError),
+    httpStatus: get(err, 'httpStatus', defaultHttpStatus),
+    description: get(err, 'description', defaultDescription),
+    error: get(err, 'error', defaultError),
   };
 }
 
@@ -38,7 +35,7 @@ export function getApiResponse(
   const status =  isError ? message.httpStatus : 200;
   const body = isError ? { error: message.description } : message;
 
-  debug(`Getting API Response with status ${status} and message ${message}`);
+  Logger.debug(`Getting API Response with status ${status} and message ${message}`);
   return {
     status,
     body,

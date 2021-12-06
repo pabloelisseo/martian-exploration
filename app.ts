@@ -6,17 +6,12 @@ import swaggerJsdoc from 'swagger-jsdoc';
 import swaggerUiExpress, { SwaggerOptions } from 'swagger-ui-express';
 import cors from 'cors';
 import express, { Express, json } from 'express';
-import Debug from 'debug';
 import { dbProvider } from '~/providers/db.provider';
-import { router as infoMiddleware } from '~/middlewares/info.middleware';
-import { router as authMiddleware } from '~/middlewares/auth.middleware';
 import { router as publicRouter } from '~/router/public.router';
 import { router as privateRouter } from '~/router/private.router';
-
-
-
-
-const debug = Debug('martian-exploration:app');
+import { Logger } from '~/logger/logger';
+import { authMiddleware } from '~/middlewares/auth.middleware';
+import { morganMiddleware } from '~/middlewares/morgan.middleware';
 
 // Setup REST server
 export const app: Express = express();
@@ -53,7 +48,7 @@ const swaggerDocs = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUiExpress.serve, swaggerUiExpress.setup(swaggerDocs));
 app.use(cors());
 app.use(json());
-app.use(infoMiddleware);
+app.use(morganMiddleware);
 app.use('/', publicRouter);
 app.use(authMiddleware);
 app.use('/', privateRouter);
@@ -73,12 +68,12 @@ export async function closeInstance(): Promise<void> {
       await instance();
 
       app.listen(environment.api.port, (): void => {
-        debug(`App listening at http://localhost:${environment.api.port}`);
+        Logger.info(`App listening at http://localhost:${environment.api.port}`);
       });
     }
   }
-  catch (error){
-    debug(`${error}`);
+  catch (err){
+    Logger.error(err);
     closeInstance();
   }
 })();

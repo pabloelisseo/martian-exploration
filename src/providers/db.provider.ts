@@ -29,9 +29,9 @@ async function instance(connectionParameters: IDbParameters | string): Promise<v
   try {
     let uri: string;
     if (isString(connectionParameters)) {
-      uri = connectionParameters;
+      uri = connectionParameters as string;
     } else {
-      uri = getUri(connectionParameters);
+      uri = getUri(connectionParameters as IDbParameters);
     }
     client = new MongoClient(uri);
 
@@ -60,8 +60,8 @@ async function instance(connectionParameters: IDbParameters | string): Promise<v
           });
       }
     });
-  } catch (error) {
-    throw new Error(error);
+  } catch (err) {
+    throw new Error(err);
   }
 }
 

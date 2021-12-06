@@ -5,7 +5,9 @@ import jwt from 'jsonwebtoken';
 import { dbProvider } from './db.provider';
 import { DecodedTokenPayload } from '~/types/token.types';
 
-
+/**
+ * Get new auth token and store it in database.
+ */
 async function getNewToken(payload: DecodedTokenPayload): Promise<Record<string, any>> {
   const { token } = sign(payload);
   const result = await dbProvider.getTokensCollection().insertOne({
@@ -22,6 +24,9 @@ async function getNewToken(payload: DecodedTokenPayload): Promise<Record<string,
   return { token };
 }
 
+/**
+ * Sign token.
+ */
 function sign(payload: DecodedTokenPayload): Record<string, any> {
   if (isEmpty(payload)) {
     throw {
@@ -41,7 +46,9 @@ function sign(payload: DecodedTokenPayload): Record<string, any> {
   return { token };
 }
 
-
+/**
+ * Check if token is well-formatted and still valid in database.
+ */
 async function checkToken(token: string): Promise<DecodedTokenPayload> {
   const tokenDocument = await dbProvider.getTokensCollection().findOne({token});
   if(isNil(tokenDocument)) {
@@ -55,6 +62,9 @@ async function checkToken(token: string): Promise<DecodedTokenPayload> {
   return payload;
 }
 
+/**
+ * Verify token.
+ */
 function verify(token: string): DecodedTokenPayload {
   try {
     if (isEmpty(token)) {
@@ -76,11 +86,11 @@ function verify(token: string): DecodedTokenPayload {
     }
 
     return payload;
-  } catch (error) {
+  } catch (err) {
     throw {
       httpStatus: 401,
       description: 'Token already expired',
-      error: error,
+      error: err,
     } as AppError;
   }
 }

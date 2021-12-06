@@ -1,12 +1,10 @@
 import { Request } from 'express';
-import Debug from 'debug';
 import { isNil } from 'lodash';
 import { ICreatePlanetInput, IPlanet, IPosition } from '~/types/planet.types';
 import { dbProvider } from '~/providers/db.provider';
 import { convertToAppError } from '~/providers/response.provider';
 import { AppError } from '~/types/error.types';
-
-const debug = Debug('martian-exploration:planet');
+import { Logger } from '~/logger/logger';
 
 export async function create(
   request: Request,
@@ -41,11 +39,10 @@ export async function create(
 
       } as IPlanet,
     );
-    debug(`Created planet ${name} with _id ${result.insertedId.toHexString()}`);
+    Logger.info(`Created planet ${name} with _id ${result.insertedId.toHexString()}`);
 
     return { message: 'Planet successfully created' };
   } catch (err) {
-    debug(`${err}`);
     return convertToAppError(err);
   }
 }

@@ -1,27 +1,25 @@
-import { get } from 'lodash';
 import { Router, Request, Response, NextFunction } from 'express';
 import { DecodedTokenPayload } from '~/types/token.types';
 import { tokenProvider } from '~/providers/token.provider';
+import { convertToAppError } from '~/providers/response.provider';
+import { Logger } from '~/logger/logger';
 
-export const router: Router = Router();
+export const authMiddleware: Router = Router();
 
 /**
  * Verify if the user auth status is valid or not
  */
-router.use(async (request: Request, response: Response, next: NextFunction) => {
+authMiddleware.use(async (request: Request, response: Response, next: NextFunction) => {
   try {
     const token: string = request.headers.authorization.split('Bearer').find(t => t !== '').trim();
 
     const payload: DecodedTokenPayload = await tokenProvider.checkToken(
       token || '',
     );
-
+    Logger.debug(`Robot identified as ${payload.name} : ${payload._id}`);
     request.decodedTokenPayload = payload as DecodedTokenPayload;
     next();
-  } catch (error) {
-    const httpStatus = get(error, 'httpStatus', 500);
-    const description = get(error, 'description', error);
-
-    return response.status(httpStatus).send({error: description});
+  } catch (err) {
+    return convertToAppError(err);
   }
 });
