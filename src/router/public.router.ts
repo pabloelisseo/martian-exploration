@@ -7,24 +7,24 @@ export const router: Router = Router();
 
 
 router.post('/robot/login', async (request: Request, response: Response) => {
-  const message = await robotProvider.login(request);
+    const message = await robotProvider.login(request);
 
-  const { status, body } = getApiResponse(message);
-  response.status(status).send(body);
+    const { status, body } = getApiResponse(message);
+    response.status(status).send(body);
 });
 
 router.post('/robot', async (request: Request, response: Response) => {
-  const message = await robotProvider.create(request);
+    const message = await robotProvider.create(request);
 
-  const { status, body } = getApiResponse(message);
-  response.status(status).send(body);
+    const { status, body } = getApiResponse(message);
+    response.status(status).send(body);
 });
 
 router.post('/planet', async (request: Request, response: Response) => {
-  const message = await planetProvider.create(request);
+    const message = await planetProvider.create(request);
 
-  const { status, body } = getApiResponse(message);
-  response.status(status).send(body);
+    const { status, body } = getApiResponse(message);
+    response.status(status).send(body);
 });
 
 /**
@@ -50,7 +50,7 @@ router.post('/planet', async (request: Request, response: Response) => {
  *     - status
  */
 router.get('/status', async (request: Request, response: Response) => {
-  const message = { status: 'ok' };
-  const { status, body } = getApiResponse(message);
-  response.status(status).send(body);
+    const message = { status: 'ok' };
+    const { status, body } = getApiResponse(message);
+    response.status(status).send(body);
 });

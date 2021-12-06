@@ -9,7 +9,7 @@ import express, { Express, json } from 'express';
 import { dbProvider } from '~/providers/db.provider';
 import { router as publicRouter } from '~/router/public.router';
 import { router as privateRouter } from '~/router/private.router';
-import { Logger } from '~/logger/logger';
+import { Logger } from '~/lib/logger';
 import { authMiddleware } from '~/middlewares/auth.middleware';
 import { morganMiddleware } from '~/middlewares/morgan.middleware';
 

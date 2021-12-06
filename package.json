@@ -5,6 +5,8 @@
   "main": "app.ts",
   "scripts": {
     "lint": "eslint src/**/*.ts --fix",
+    "test": "jest --coverage",
+    "test:watch": "jest --watch",
     "build": "rimraf dist && ttsc --build tsconfig.prod.json",
     "start:dev": "nodemon --config .nodemonrc.json src/app.ts",
     "start:prod": "npm run build && node dist/app.js"

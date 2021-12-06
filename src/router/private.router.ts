@@ -5,10 +5,10 @@ import { robotProvider } from '~/providers/robot.provider';
 export const router: Router = Router();
 
 router.post('/robot/move', async (request: Request, response: Response) => {
-  const message = await robotProvider.move(request);
+    const message = await robotProvider.move(request);
 
-  const { status, body } = getApiResponse(message);
-  response.status(status).send(body);
+    const { status, body } = getApiResponse(message);
+    response.status(status).send(body);
 });
 
 /**
@@ -30,7 +30,7 @@ router.post('/robot/move', async (request: Request, response: Response) => {
  *     - private
  */
 router.get('/profile', async (request: Request, response: Response) => {
-  const message = { status: 'ok' };
-  const { status, body } = getApiResponse(message);
-  response.status(status).send(body);
+    const message = { status: 'ok' };
+    const { status, body } = getApiResponse(message);
+    response.status(status).send(body);
 });
