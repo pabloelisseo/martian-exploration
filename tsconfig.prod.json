@@ -1,4 +1,11 @@
 {
     "extends": "./tsconfig.json",
-    "exclude": ["tests/**/*.ts"]
+    "exclude": [
+      "tests/**/*.ts",
+        ],
+        "compilerOptions": {
+          "typeRoots": [
+                "@types",
+              ],
+        },
   }
