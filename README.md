@@ -94,5 +94,5 @@ If you are using powershell
 
 `npm run test:powershell`
 
-
-
+## TODO
+TODO: Safely pass secret values to terraform.
