@@ -43,6 +43,11 @@ node_modules/
 .env.development
 .env.production
 
+# Terraform files
+.Terraform
+*.lock.hcl
+*.tfstate*
+
 # VSCode folder
 .vscode
 
