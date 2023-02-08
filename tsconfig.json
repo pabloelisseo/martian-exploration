@@ -1,22 +1,21 @@
 {
-  "ts-node": {
-    "compiler": "ttypescript"
-  },
-  "compilerOptions": {
-    "module": "commonjs",
-    "outDir": "./dist",
-    "baseUrl": "./src",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "paths": {
-      "~/*": ["*"]
+    "ts-node": {
+        "compiler": "ttypescript"
     },
-    "typeRoots": [
-      "@types",
-      "./node_modules/@types"
-    ],
-    "plugins": [
-      { "transform": "typescript-transform-paths" }
-    ],
-  }
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "lib": ["ES2015", "DOM"],
+        "outDir": "./dist",
+        "baseUrl": "./src",
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "paths": {
+            "~/*": ["*"]
+        },
+        "typeRoots": ["@types", "./node_modules/@types"],
+        "plugins": [{ "transform": "typescript-transform-paths" }]
+    }
 }

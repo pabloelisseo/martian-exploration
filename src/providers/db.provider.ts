@@ -17,8 +17,9 @@ function getClient(): MongoClient {
  * Get MongoDB connection URI
  */
 function getUri(connectOptions: IDbParameters): string {
-    const { protocol, username, password, host, db, options } = connectOptions;
-    return `${protocol}${username}:${password}@${host}/${db}?retryWrites=${options.retryWrites}&w=${options.w}`;
+    const { protocol, username, password, host, db } = connectOptions;
+
+    return protocol + (username || '') + (password ? (':' + password + '@'):'') + host + '/'+ db;
 }
 
 /**

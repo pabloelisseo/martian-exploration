@@ -10,14 +10,9 @@ export const environment: Environment = {
     db: {
         db: process.env.DB_NAME,
         host: process.env.DB_HOST,
-        password: process.env.DB_PASSWORD,
+        password: process.env.MONGO_INITDB_ROOT_PASSWORD,
         protocol: process.env.DB_PROTOCOL,
-        username: process.env.DB_USERNAME,
-        options: {
-            authSource: process.env.DB_OPTIONS_AUTH_SOURCE,
-            retryWrites: process.env.DB_OPTIONS_RETRY_WRITES === 'true',
-            w: process.env.DB_OPTIONS_W,
-        },
+        username: process.env.MONGO_INITDB_ROOT_USERNAME,
     },
     crypto: {
         algorithm: process.env.ALGORITHM,

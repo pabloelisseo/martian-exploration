@@ -22,11 +22,4 @@ export interface IDbParameters {
   password: string;
   protocol: string;
   username: string;
-  options: IDbParametersOptions;
-}
-
-export interface IDbParametersOptions {
-  authSource: string;
-  retryWrites: boolean;
-  w: string;
 }

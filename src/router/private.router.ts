@@ -19,10 +19,13 @@ export const router: Router = Router();
  *       content:
  *         application/json:
  *           schema:
- *             type: array
- *             items:
- *               type: string
- *               example: [ "L", "R" ]
+ *              type: object
+ *              properties:
+ *                instructions:
+ *                  type: array
+ *                  items:
+ *                    type: string
+ *                    example: "L"
  *     responses:
  *       200:
  *         description: Successfully moved.

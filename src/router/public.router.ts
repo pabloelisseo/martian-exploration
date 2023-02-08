@@ -135,7 +135,7 @@ router.post('/robot', async (request: Request, response: Response) => {
  *              
  *                 
  *     tags:
- *     - private
+ *     - public
  */
 router.post('/planet', async (request: Request, response: Response) => {
     const message = await planetProvider.create(request);

@@ -7,7 +7,7 @@ export const config: ICryptoConfig = {
     algorithm: environment.crypto.algorithm,
     salt: environment.crypto.salt,
     encryptionKey: environment.crypto.encryptionKey,
-    iv: isEmpty(environment.crypto.iv) ? null: Buffer.from(environment.crypto.iv.slice(0, 8), 'utf8'),
+    iv: isEmpty(environment.crypto.iv) ? null: Buffer.from(environment.crypto.iv.slice(0, 16), 'utf8'),
 };
 
 function decrypt(token: string): string {
